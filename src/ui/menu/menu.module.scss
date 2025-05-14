@@ -1,0 +1,24 @@
+@use '@/ui/variables' as *;
+@use '@/ui/mixins' as *;
+
+.menu {
+  width: 100%;
+  padding: 10px 20px;
+  
+  &__list {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    list-style: none;
+  }
+
+  &__item {
+    color: $font-color-default;  
+    
+    &:hover {
+      color: $font-color-hover;
+    }
+
+    @include animated-underline;
+  }
+}

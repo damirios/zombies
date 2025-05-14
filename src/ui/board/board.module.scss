@@ -1,0 +1,17 @@
+.board {
+  &__wrapper {
+    height: 100%;
+    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+  
+  &__grid {
+    padding: 50px;
+    border-radius: 4px;
+    border: 1px solid #333333;
+    display: grid;
+  }
+}

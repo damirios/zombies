@@ -1,0 +1,28 @@
+@use './variables.scss' as *;
+
+@mixin animated-underline(
+  $color: $font-color-hover,
+  $thickness: 2px,
+  $transition-duration: 0.3s
+) {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: $thickness;
+    background-color: $color;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform $transition-duration ease-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+}
