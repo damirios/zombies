@@ -1,35 +1,34 @@
 import { create } from "zustand";
 
-import { Cell } from "@/types/cell";
+import { Board } from "@/types";
 
-import { BOARD_COLS, BOARD_ROWS } from "../config";
+import { generateInitialCellsConfiguration } from "./logic";
+
+import {
+  BOARD_COLS,
+  BOARD_ROWS,
+  TOTAL_ENTITIES_AMOUNT,
+  TYPE_AMOUNTS,
+} from "../config";
 
 /** Начальное состояние доски */
-const initialBoardState: Cell[][] = Array(BOARD_ROWS)
-  .fill(1)
-  .map((_, i) => {
-    return Array(BOARD_COLS)
-      .fill(1)
-      .map((_, j) => {
-        return {
-          position: {
-            row: i,
-            col: j,
-          },
-          isRevealed: false,
-          isOccupied: false,
-        };
-      });
-  });
+const initialBoardState: Board = {
+  cells: [],
+  hiddenEntitiesAmount: TYPE_AMOUNTS,
+  openCellsAmount: 0,
+};
 
 interface BoardState {
   /** Состояние игровой доски */
-  board: Cell[][];
+  board: Board;
   /** Сеттер состояния игровой доски */
-  setBoard: (board: Cell[][]) => void;
+  setBoard: (board: Board | ((prev: Board) => Board)) => void;
 }
 
-export const useBoardStore = create<BoardState>((set) => ({
+export const useBoardState = create<BoardState>((set) => ({
   board: initialBoardState,
-  setBoard: (board) => set({ board }),
+  setBoard: (updater) =>
+    set((state) => ({
+      board: typeof updater === "function" ? updater(state.board) : updater,
+    })),
 }));

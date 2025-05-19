@@ -1,16 +1,39 @@
 "use client";
 
-import { CSSProperties, FC } from "react";
+import { CSSProperties, FC, useEffect } from "react";
 
-import { useBoardState } from "@/model/board";
+import {
+  BOARD_COLS,
+  BOARD_ROWS,
+  CELL_SIZE,
+  TOTAL_ENTITIES_AMOUNT,
+} from "@/model/config";
+import {
+  generateInitialCellsConfiguration,
+  useBoardState,
+} from "@/model/board";
 
 import { Cell } from "../cell";
 
 import s from "./board.module.scss";
-import { BOARD_COLS, BOARD_ROWS, CELL_SIZE } from "@/model/config";
 
 export const Board: FC = () => {
-  const board = useBoardState();
+  const {
+    board: { cells },
+    setBoard,
+  } = useBoardState();
+
+  // TODO: временное решение, пока нет бэкенда
+  useEffect(() => {
+    setBoard((prev) => ({
+      ...prev,
+      cells: generateInitialCellsConfiguration({
+        rows: BOARD_ROWS,
+        cols: BOARD_COLS,
+        totalEntitiesAmount: TOTAL_ENTITIES_AMOUNT,
+      }),
+    }));
+  }, []);
 
   const style: CSSProperties = {
     gridTemplateColumns: `repeat(${CELL_SIZE}, ${BOARD_COLS})`,
@@ -20,7 +43,7 @@ export const Board: FC = () => {
   return (
     <div className={s.board__wrapper}>
       <div className={s.board__grid} style={style}>
-        {board.map((row, i) =>
+        {cells.map((row, i) =>
           row.map((cell, j) => <Cell key={`${i}_${j}`} cell={cell} />)
         )}
       </div>

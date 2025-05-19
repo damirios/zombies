@@ -1,27 +1,33 @@
+import clsx from "clsx";
 import Image from "next/image";
 import { CSSProperties, FC } from "react";
 
 import { CELL_IMAGE_SIZE, CELL_SIZE } from "@/model/config";
-import { Cell as CellType, OpeningEntityEnum } from "@/types";
+import { Cell as CellType, RevealingEntityEnum } from "@/types";
 
 import { getImageSrc } from "./utils";
 
 import s from "./cell.module.scss";
+import { onClickCell, useBoardState } from "@/model/board";
+import { HIDDEN_CELL_PATH } from "@/config";
 
 type Props = {
   /** Данные ячейки */
   cell: CellType;
 };
 
-export const Cell: FC<Props> = ({
-  cell: {
+export const Cell: FC<Props> = ({ cell }) => {
+  const {
+    isOccupied,
+    isRevealed,
     position: { col, row },
-  },
-}) => {
-  const type: OpeningEntityEnum | null =
-    Math.random() > 0.5 ? OpeningEntityEnum.ZOMBIE : null;
+  } = cell;
 
-  const hasOpened = type !== null;
+  const { board } = useBoardState();
+
+  const handleClick = () => {
+    onClickCell({ board, row, col });
+  };
 
   // TODO: положить в утилиту getCellStyle
   const style: CSSProperties = {
@@ -32,20 +38,37 @@ export const Cell: FC<Props> = ({
     borderLeftWidth: Number(col === 0),
   };
 
-  if (hasOpened) {
-    style.background = "none";
+  // Если на ячейке нет карточки
+  if (!isOccupied) {
+    const className = clsx(s.cell, s.cell_empty);
+
+    return <div className={className} style={style} />;
   }
 
-  return (
-    <div className={s.cell} style={style}>
-      {hasOpened && (
+  // Если на ячейке есть карточка и она открыта
+  if (isRevealed) {
+    const className = clsx(s.cell, s.cell_opened);
+
+    return (
+      <div className={className} style={style} onClick={handleClick}>
         <Image
-          src={getImageSrc(type)}
+          src={getImageSrc(RevealingEntityEnum.ZOMBIE)}
           width={CELL_IMAGE_SIZE}
           height={CELL_IMAGE_SIZE}
           alt="Иконка.свг"
         />
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={s.cell} style={style} onClick={handleClick}>
+      <Image
+        src={HIDDEN_CELL_PATH}
+        width={CELL_IMAGE_SIZE}
+        height={CELL_IMAGE_SIZE}
+        alt="Иконка.свг"
+      />
     </div>
   );
 };

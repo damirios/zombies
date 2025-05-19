@@ -15,4 +15,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &_empty {
+    background: none;
+  }
+
+  &_opened {
+    background: none;
+  }
 }

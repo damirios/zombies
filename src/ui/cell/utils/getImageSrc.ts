@@ -1,13 +1,14 @@
-import { OpeningEntityEnum } from "@/types";
+import { RevealingEntityEnum } from "@/types";
 
-const { ZOMBIE } = OpeningEntityEnum;
+const { AXE, PALLET, ZOMBIE } = RevealingEntityEnum;
 
 const prefix = "/icons";
 
-const cellImageMap: Record<OpeningEntityEnum, string> = {
-  ZOMBIE: `${prefix}/zombie.svg`,
-  PALLET: `${prefix}/pallet.svg`,
+const cellImageMap: Record<RevealingEntityEnum, string> = {
+  [AXE]: `${prefix}/axe.svg`,
+  [PALLET]: `${prefix}/pallet.svg`,
+  [ZOMBIE]: `${prefix}/zombie.svg`,
 };
 
-export const getImageSrc = (entity: OpeningEntityEnum): string =>
+export const getImageSrc = (entity: RevealingEntityEnum): string =>
   cellImageMap[entity];
