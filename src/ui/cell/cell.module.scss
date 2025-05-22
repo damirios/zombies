@@ -1,6 +1,6 @@
 @use '@/ui/variables' as *;
 
-.cell {
+.default {
   border: $cell-border;
   border-top-width: 0;
   border-left-width: 0;
@@ -16,11 +16,14 @@
   align-items: center;
   justify-content: center;
 
-  &_empty {
-    background: none;
-  }
+}
 
-  &_opened {
-    background: none;
-  }
+.empty {
+  background: none;
+  cursor: default;
+}
+
+.revealed {
+  background: none;
+  cursor: default;
 }

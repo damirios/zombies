@@ -2,14 +2,7 @@ import { create } from "zustand";
 
 import { Board } from "@/types";
 
-import { generateInitialCellsConfiguration } from "./logic";
-
-import {
-  BOARD_COLS,
-  BOARD_ROWS,
-  TOTAL_ENTITIES_AMOUNT,
-  TYPE_AMOUNTS,
-} from "../config";
+import { TYPE_AMOUNTS } from "../config";
 
 /** Начальное состояние доски */
 const initialBoardState: Board = {

@@ -28,6 +28,7 @@ export const generateInitialCellsConfiguration = ({
             },
             isRevealed: false,
             isOccupied: false,
+            type: null,
           };
         });
     });

@@ -1,21 +1,19 @@
-import { Board, Position, RevealingEntityEnum } from "@/types";
-import { mapRecordValues } from "@/utils";
+import { Board, RevealingEntityEnum } from "@/types";
+import { isNull, mapRecordValues } from "@/utils";
 
 type Params = {
   /** Игровая доска */
   board: Board;
   /** Общее кол-во ячеек с открываемыми карточками на игровой доске */
   boardEntityCellsAmount: number;
-} & Position;
+};
 
 /** Открывает ячейку - определяет вероятность каждого типа объекта и определяет тип объекта*/
 export const revealCell = ({
   board,
   boardEntityCellsAmount,
-  row,
-  col,
-}: Params) => {
-  const { cells, hiddenEntitiesAmount, openCellsAmount } = board;
+}: Params): RevealingEntityEnum | null => {
+  const { hiddenEntitiesAmount, openCellsAmount } = board;
 
   /** Общее кол-во нераскрытых ячеек */
   const hiddenCellsAmount = boardEntityCellsAmount - openCellsAmount;
@@ -26,15 +24,15 @@ export const revealCell = ({
   // Дальше Math.random даёт значение от 0 до 1 и у каждой сущности есть свой диапазон значений,
   // в котором она "выпадает".
 
-  console.log("hiddenEntitiesAmount: ", hiddenEntitiesAmount);
-  console.log("hiddenCellsAmount: ", hiddenCellsAmount);
   /** Вероятности раскрытия */
   const possibilities: Record<RevealingEntityEnum, number> = mapRecordValues(
     hiddenEntitiesAmount,
     (amount) => amount / hiddenCellsAmount
   );
-
-  /** Значения от 0 до 1, чтобы при открытии ячейки определить, каким будет тип ячейки */
+  console.log("board: ", board);
+  console.log("hiddenEntitiesAmount: ", hiddenEntitiesAmount);
+  console.log("possibilities: ", possibilities);
+  /** Значения от 0 до 1, чтобы при открытии ячейки определить, каким будет тип ячейки. Причём значения расположены по возрастанию, это важно */
   const fromZeroToOne: Record<RevealingEntityEnum, number> = {} as Record<
     RevealingEntityEnum,
     number
@@ -50,6 +48,20 @@ export const revealCell = ({
     bottomPlank = newPlank;
   }
 
-  console.log("possibilities: ", possibilities);
   console.log("fromZeroToOne: ", fromZeroToOne);
+  const randomValue = Math.random();
+  console.log("randomValue: ", randomValue);
+  const fromZeroToOneEntries = Object.entries(fromZeroToOne);
+
+  for (let i = 0; i < fromZeroToOneEntries.length; i++) {
+    const [type, value] = fromZeroToOneEntries[i];
+    /** Больше ли значение вероятности текущего типа сущности */
+    const isCurrentValueHigher = value > randomValue;
+
+    if (isCurrentValueHigher) {
+      return type as RevealingEntityEnum;
+    }
+  }
+
+  return null;
 };
