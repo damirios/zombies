@@ -29,9 +29,7 @@ export const revealCell = ({
     hiddenEntitiesAmount,
     (amount) => amount / hiddenCellsAmount
   );
-  console.log("board: ", board);
-  console.log("hiddenEntitiesAmount: ", hiddenEntitiesAmount);
-  console.log("possibilities: ", possibilities);
+
   /** Значения от 0 до 1, чтобы при открытии ячейки определить, каким будет тип ячейки. Причём значения расположены по возрастанию, это важно */
   const fromZeroToOne: Record<RevealingEntityEnum, number> = {} as Record<
     RevealingEntityEnum,
@@ -48,9 +46,8 @@ export const revealCell = ({
     bottomPlank = newPlank;
   }
 
-  console.log("fromZeroToOne: ", fromZeroToOne);
   const randomValue = Math.random();
-  console.log("randomValue: ", randomValue);
+
   const fromZeroToOneEntries = Object.entries(fromZeroToOne);
 
   for (let i = 0; i < fromZeroToOneEntries.length; i++) {

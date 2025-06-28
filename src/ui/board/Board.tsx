@@ -1,6 +1,12 @@
 "use client";
 
-import { CSSProperties, FC, useEffect } from "react";
+import {
+  CSSProperties,
+  FC,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from "react";
 
 import {
   BOARD_COLS,
@@ -13,15 +19,43 @@ import {
   useBoardState,
 } from "@/model/board";
 
-import { Cell } from "../cell";
+import { Cell as CellElement } from "../cell";
 
 import s from "./board.module.scss";
+import { useGameState } from "@/model/game";
+import { Cell, Nullable } from "@/types";
+import { canMove } from "@/model/player";
+import { PossibleRoutes } from "../possible-routes";
 
-export const Board: FC = () => {
+type Props = {
+  className: string;
+};
+
+export const Board: FC<Props> = ({ className }) => {
   const {
     board: { cells },
     setBoard,
   } = useBoardState();
+
+  const {
+    game: {
+      players,
+      turn: {
+        playerEntity: { position },
+      },
+    },
+  } = useGameState();
+
+  /** Ячейка, на которую навели курсор */
+  const [hoveredCell, setHoveredCell] = useState<Nullable<Cell>>(null);
+
+  const handleHoverCell = (cell: Cell) => {
+    setHoveredCell(cell);
+  };
+
+  const handleMouseLeave = () => {
+    // setHoveredCell(null);
+  };
 
   // TODO: временное решение, пока нет бэкенда
   useEffect(() => {
@@ -36,16 +70,44 @@ export const Board: FC = () => {
   }, []);
 
   const style: CSSProperties = {
-    gridTemplateColumns: `repeat(${CELL_SIZE}, ${BOARD_COLS})`,
-    gridTemplateRows: `repeat(${CELL_SIZE}, ${BOARD_ROWS})`,
+    gridTemplateColumns: `repeat(${BOARD_COLS}, ${CELL_SIZE}px)`,
+    gridTemplateRows: `repeat(${BOARD_ROWS}, ${CELL_SIZE}px)`,
   };
 
   return (
-    <div className={s.board__wrapper}>
-      <div className={s.board__grid} style={style}>
-        {cells.map((row, i) =>
-          row.map((cell, j) => <Cell key={`${i}_${j}`} cell={cell} />)
-        )}
+    <div className={`${s.board__wrapper} ${className}`}>
+      <div className={s.board__grid_container}>
+        <div
+          className={s.board__grid}
+          onMouseLeave={handleMouseLeave}
+          style={style}
+        >
+          {cells.map((row, i) =>
+            row.map((cell, j) => {
+              const player = players.find(
+                ({
+                  playerEntity: {
+                    position: { col, row },
+                  },
+                }) => row === i && col === j
+              );
+
+              return (
+                <CellElement
+                  key={`${i}_${j}`}
+                  onHover={handleHoverCell}
+                  cell={cell}
+                  player={player}
+                />
+              );
+            })
+          )}
+        </div>
+
+        <PossibleRoutes
+          currentPosition={position}
+          targetPosition={hoveredCell?.position}
+        />
       </div>
     </div>
   );

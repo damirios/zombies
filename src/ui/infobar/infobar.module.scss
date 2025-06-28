@@ -1,0 +1,20 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  border: 1px solid rgb(136, 136, 136);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.current_turn, .next_turn {
+
+}
+
+.player_data {
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}

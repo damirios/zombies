@@ -1,1 +1,1 @@
-export * from "./getImageSrc";
+export * from "./getRevealingCellImageSrc";

@@ -5,13 +5,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
   }
   
-  &__grid {
+  &__grid_container {
     padding: 50px;
     border-radius: 4px;
     border: 1px solid #333333;
+    
+    position: relative;
+  }
+  
+  &__grid {
     display: grid;
   }
 }

@@ -1,3 +1,4 @@
+import { CELL_CUSTOM_POSSIBILITIES } from "@/model/config";
 import { Cell } from "@/types";
 
 type Params = {
@@ -39,7 +40,9 @@ export const generateInitialCellsConfiguration = ({
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        const shouldOccupy = Math.random() > 0.5;
+        const customPossibility =
+          CELL_CUSTOM_POSSIBILITIES[`${col}_${row}`] ?? 0.5;
+        const shouldOccupy = Math.random() < customPossibility;
         const cell = cells[row][col];
 
         if (shouldOccupy && !cell.isOccupied) {
