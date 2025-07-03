@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import {
+  BOARD_CELLS_AMOUNT,
   BOARD_COLS,
   BOARD_ROWS,
   CELL_SIZE,
@@ -21,11 +22,12 @@ import {
 
 import { Cell as CellElement } from "../cell";
 
-import s from "./board.module.scss";
 import { useGameState } from "@/model/game";
 import { Cell, Nullable } from "@/types";
 import { canMove } from "@/model/player";
 import { PossibleRoutes } from "../possible-routes";
+import { getPlayerByPosition } from "./utils";
+import { GridLines } from "./GridLines";
 
 type Props = {
   className: string;
@@ -50,6 +52,7 @@ export const Board: FC<Props> = ({ className }) => {
   const [hoveredCell, setHoveredCell] = useState<Nullable<Cell>>(null);
 
   const handleHoverCell = (cell: Cell) => {
+    console.log("handleHoverCell: ", cell);
     setHoveredCell(cell);
   };
 
@@ -69,32 +72,20 @@ export const Board: FC<Props> = ({ className }) => {
     }));
   }, []);
 
-  const style: CSSProperties = {
-    gridTemplateColumns: `repeat(${BOARD_COLS}, ${CELL_SIZE}px)`,
-    gridTemplateRows: `repeat(${BOARD_ROWS}, ${CELL_SIZE}px)`,
-  };
-
   return (
-    <div className={`${s.board__wrapper} ${className}`}>
-      <div className={s.board__grid_container}>
-        <div
-          className={s.board__grid}
-          onMouseLeave={handleMouseLeave}
-          style={style}
-        >
-          {cells.map((row, i) =>
-            row.map((cell, j) => {
-              const player = players.find(
-                ({
-                  playerEntity: {
-                    position: { col, row },
-                  },
-                }) => row === i && col === j
-              );
+    <svg
+      width={`${BOARD_COLS * CELL_SIZE + 2 * 50}px`}
+      height={`${BOARD_ROWS * CELL_SIZE + 2 * 50}px`}
+    >
+      <svg x={"50px"} y={"50px"}>
+        <g onMouseLeave={handleMouseLeave}>
+          {cells.map((cellsRow, row) =>
+            cellsRow.map((cell, col) => {
+              const player = getPlayerByPosition(players, { row, col });
 
               return (
                 <CellElement
-                  key={`${i}_${j}`}
+                  key={`${row}_${col}`}
                   onHover={handleHoverCell}
                   cell={cell}
                   player={player}
@@ -102,13 +93,15 @@ export const Board: FC<Props> = ({ className }) => {
               );
             })
           )}
-        </div>
+        </g>
+      </svg>
 
-        <PossibleRoutes
-          currentPosition={position}
-          targetPosition={hoveredCell?.position}
-        />
-      </div>
-    </div>
+      <GridLines />
+
+      <PossibleRoutes
+        currentPosition={position}
+        targetPosition={hoveredCell?.position}
+      />
+    </svg>
   );
 };

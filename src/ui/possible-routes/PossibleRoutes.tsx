@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useMemo } from "react";
+import { FC } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -20,25 +20,22 @@ export const PossibleRoutes: FC<Props> = ({
   currentPosition,
   targetPosition,
 }) => {
+  console.log("currentPosition: ", currentPosition);
+  console.log("targetPosition: ", targetPosition);
   if (!targetPosition || !canMove(currentPosition, targetPosition, 5)) {
     return null;
   }
 
-  const possibleRoutes = useMemo(
-    () => getPossibleRoutes(currentPosition, targetPosition, 5),
-    [currentPosition, targetPosition]
-  );
-
-  const ids = useMemo(
-    () => possibleRoutes.map(() => uuidv4()),
-    [possibleRoutes]
-  );
+  const possibleRoutes = getPossibleRoutes(currentPosition, targetPosition, 5);
+  const ids = possibleRoutes.map(() => uuidv4());
 
   return (
     <svg className={s.routes_container}>
-      {possibleRoutes.map((route, index) => (
-        <PossibleRoute key={ids[index]} route={route} />
-      ))}
+      {possibleRoutes
+        .filter((_, index) => index < 1)
+        .map((route, index) => (
+          <PossibleRoute key={ids[index]} route={route} />
+        ))}
     </svg>
   );
 };

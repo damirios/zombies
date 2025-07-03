@@ -32,15 +32,25 @@ export const Cell: FC<Props> = ({ cell, player, onHover }) => {
   const { board } = useBoardState();
 
   const handleClick = () => {
+    console.log("click: ");
     if (!isRevealed) {
       onClickCell({ board, row, col });
     }
   };
 
-  const handleHover: MouseEventHandler<HTMLDivElement> = () => {
+  const handleHover: MouseEventHandler<SVGSVGElement> = () => {
+    console.log("cell: ", cell);
     onHover(cell);
   };
+  console.log("cell: ", cell);
 
+  const attributes = {
+    x: `${col * CELL_SIZE}px`,
+    y: `${row * CELL_SIZE}px`,
+    width: `${CELL_SIZE}px`,
+    height: `${CELL_SIZE}px`,
+    fill: "white",
+  };
   // TODO: положить в утилиту getCellStyle
   const style: CSSProperties = {
     gridArea: [row + 1, col + 1, row + 2, col + 2].join(" / "),
@@ -69,19 +79,14 @@ export const Cell: FC<Props> = ({ cell, player, onHover }) => {
     };
 
     return (
-      <div
-        className={className}
-        style={style}
-        onMouseEnter={handleHover}
-        onClick={handleClick}
-      >
+      <rect {...attributes} onMouseEnter={handleHover} onClick={handleClick}>
         <Image
           src={getPlayerIconSrc(playerClass)}
           width={CELL_IMAGE_SIZE}
           height={CELL_IMAGE_SIZE}
           alt="Иконка.свг"
         />
-      </div>
+      </rect>
     );
   }
 
@@ -89,9 +94,7 @@ export const Cell: FC<Props> = ({ cell, player, onHover }) => {
   if (!isOccupied) {
     const className = clsx(s.default, s.empty);
 
-    return (
-      <div className={className} onMouseEnter={handleHover} style={style} />
-    );
+    return <rect {...attributes} onMouseEnter={handleHover} />;
   }
 
   // Если на ячейке есть карточка и она открыта
@@ -99,7 +102,7 @@ export const Cell: FC<Props> = ({ cell, player, onHover }) => {
     const className = clsx(s.default, s.revealed);
 
     return (
-      <div
+      <svg
         className={className}
         style={style}
         onClick={handleClick}
@@ -111,23 +114,18 @@ export const Cell: FC<Props> = ({ cell, player, onHover }) => {
           height={CELL_IMAGE_SIZE}
           alt="Иконка.свг"
         />
-      </div>
+      </svg>
     );
   }
 
   return (
-    <div
-      className={s.default}
-      style={style}
-      onClick={handleClick}
-      onMouseEnter={handleHover}
-    >
+    <rect {...attributes} onClick={handleClick} onMouseEnter={handleHover}>
       <Image
         src={HIDDEN_CELL_PATH}
         width={CELL_IMAGE_SIZE}
         height={CELL_IMAGE_SIZE}
         alt="Иконка.свг"
       />
-    </div>
+    </rect>
   );
 };
